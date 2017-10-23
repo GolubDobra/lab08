@@ -1,139 +1,100 @@
 [![Build Status](https://travis-ci.org/GolubDobra/lab06.svg?branch=master)](https://travis-ci.org/GolubDobra/lab06)
-## Laboratory work VI
 
-Данная лабораторная работа посвещена изучению фреймворков для тестирования на примере **Catch**
+## Laboratory work VII
+
+Данная лабораторная работа посвещена изучению систем документирования исходного кода на примере **Doxygen**
 
 ```ShellSession
-$ open https://github.com/philsquared/Catch
+$ open https://www.stack.nl/~dimitri/doxygen/manual/index.html
 ```
 
 ## Tasks
 
-- [x] 1. Создать публичный репозиторий с названием **lab06** на сервисе **GitHub**
-- [x] 2. Выполнить инструкцию учебного материала
-- [x] 3. Ознакомиться со ссылками учебного материала
-- [x] 4. Составить отчет и отправить ссылку личным сообщением в **Slack**
+- [x] 1. Создать публичный репозиторий с названием **lab07** на сервисе **GitHub**
+- [X] 2. Выполнить инструкцию учебного материала
+- [X] 3. Ознакомиться со ссылками учебного материала
+- [X] 4. Составить отчет и отправить ссылку личным сообщением в **Slack**
 
 ## Tutorial
-
-#### Установка значений для сервиса **GitHub**
-
+Устанавливание значение для сервиса **GitHub** и выбираем редактор  
 ```ShellSession
-$ export GITHUB_USERNAME=<имя_пользователя> # Устанавливаем значение переменной окружения GITHUB_USERNAME
+$ export GITHUB_USERNAME=<имя_пользователя> #Устанавливаем значение переменной окружения GITHUB_USERNAME
+$ alias edit=subl # Выбираем текстовый редактор 
 ```
-
-#### Инициализируем директорию **lab06**
-
+Инициализация директории **lab07**
 ```ShellSession
-$ git clone https://github.com/${GITHUB_USERNAME}/lab05 lab06
-Клонирование в «lab06»…
-$ cd lab06 
-$ git remote remove origin 
-$ git remote add origin https://github.com/${GITHUB_USERNAME}/lab06         
+$ git clone https://github.com/${GITHUB_USERNAME}/lab06 lab07
+Клонирование в «lab07»…
+$ cd lab06 # Переходим в каталог lab07
+$ git remote remove origin #Удалить старый репозиторий
+$ git remote add origin https://github.com/${GITHUB_USERNAME}/lab07 # Добавляем новый удаленный репозиторий
 ```
-
+Работа с системой документирования **Doxygen**
 ```ShellSession
-$ mkdir tests       				#Создаем каталог tests
-$ wget https://github.com/philsquared/Catch/releases/download/v1.9.3/catch.hpp -O tests/catch.hpp    #Подключаем библиотеку для модульного тестирования на языке С++ catch.hpp
-$ cat > tests/main.cpp <<EOF             	 #Изменяем файл main.cpp
-#define CATCH_CONFIG_MAIN
-#include "catch.hpp"
-EOF
+$ mkdir docs #Создаем каталог docs
+$ doxygen -g docs/doxygen.conf #Создаем файл doxygen.conf
+$ cat docs/doxygen.conf #Редактирование файла doxygen.conf
 ```
-
-#### Добавляем изменения в **CMakeLists.txt**
-
+Работаем с конфигурационным файлом doxygen.conf
 ```ShellSession
-$ sed -i '' '/option(BUILD_EXAMPLES "Build examples" OFF)/a\   #Записываем option(BUILD_TESTS "Build tests" OFF) в файл CMakeLists.txt
-option(BUILD_TESTS "Build tests" OFF)
-' CMakeLists.txt
-$ cat >> CMakeLists.txt <<EOF
-
-if(BUILD_TESTS)
-	enable_testing()
-	file(GLOB \${PROJECT_NAME}_TEST_SOURCES tests/*.cpp)
-	add_executable(check \${\${PROJECT_NAME}_TEST_SOURCES})
-	target_link_libraries(check \${PROJECT_NAME} \${DEPENDS_LIBRARIES})
-	add_test(NAME check COMMAND check "-s" "-r" "compact" "--use-colour" "yes") 
-endif()
-EOF
+#Изменение файла doxygen.conf
+$ sed -i '' 's/\(PROJECT_NAME.*=\).*$/\1 print/g' docs/doxygen.conf
+$ sed -i '' 's/\(EXAMPLE_PATH.*=\).*$/\1 examples/g' docs/doxygen.conf
+$ sed -i '' 's/\(INCLUDE_PATH.*=\).*$/\1 examples/g' docs/doxygen.conf
+$ sed -i '' 's/\(INPUT *=\).*$/\1 README.md include/g' docs/doxygen.conf
+$ sed -i '' 's/\(USE_MDFILE_AS_MAINPAGE.*=\).*$/\1 README.md/g' docs/doxygen.conf
+$ sed -i '' 's/\(OUTPUT_DIRECTORY.*=\).*$/\1 docs/g' docs/doxygen.conf
 ```
-
-#### Добавляем изменения в **test1.cpp**
-
+Изменение файла README.md
 ```ShellSession
-$ cat >> tests/test1.cpp <<EOF
-#include "catch.hpp"
-#include <print.hpp>
-
-TEST_CASE("output values should match input values", "[file]") {
-  std::string text = "hello";
-  std::ofstream out("file.txt");
-  
-  print(text, out);
-  out.close();
-  
-  std::string result;
-  std::ifstream in("file.txt");
-  in >> result;
-  
-  REQUIRE(result == text);
-}
-EOF
+$ sed -i '' 's/lab06/lab07/g' README.md
 ```
-
-#### Собираем проект
-
+Документирование и редактирование print.hpp
 ```ShellSession
-$ cmake -H. -B_build -DCMAKE_INSTALL_PREFIX=_install -DBUILD_TESTS=ON
-$ cmake --build _build 						# Запускаем сборку в каталоге _build
-$ cmake --build _build --target test #Сборка test 
+# документируем функции print
+$ edit include/print.hpp
 ```
-
-#### Работаем с сервисом **Travis**
-
+Отправляем последние изменения на **GitHub** сервер
 ```ShellSession
-$ sed -i '' 's/lab05/lab06/g' README.md                                             # Добавляем изменения в файле README.md
-$ sed -i '' 's/\(DCMAKE_INSTALL_PREFIX=_install\)/\1 -DBUILD_TESTS=ON/' .travis.yml # Добавляем изменения в файле .travis.yml
-$ sed -i '' '/cmake --build _build --target install/a\
-- cmake --build _build --target test
-' .travis.yml
+$ git add . # Отследить изменения всех файлов
+$ git commit -m"added doxygen.conf" # Сохранить изменения с комментарием
+$ git push origin master # Загрузка файлов на сервер
 ```
-
+Работаем с сервисом **Travis**
 ```ShellSession
-$ travis lint 						# display warnings for a .travis.yml
-Warnings for .travis.yml:
-[x] value for addons section is empty, dropping
-[x] in addons section: unexpected key apt, dropping
+$ travis login --auto # Авторизация через GitHub
+$ travis enable # Включение проекта
 ```
-
-#### Работаем в **GitHub** 
-
+Работа с файлом документации и отправление последни изменений на **GitHub** сервер
 ```ShellSession
-$ git add .                     # Отследить изменения всех файлов
-$ git commit -m"added tests"    # Сохранить изменения
-$ git push origin master        # Загрузка файлов на сервер
+$ doxygen docs/doxygen.conf # Создание конфигурационного файла документации
+$ ls | grep "[^docs]" | xargs rm -rf
+$ mv docs/html/* . && rm -rf docs # Перемещение и удаление файлов кроме файла docs
+$ git checkout -b gh-pages #Перемещаемся на ветку gh-pages,где хранится документация html
+#Добавляем все отредактированные файлы в подтвержденные
+$ git add . # Отследить изменения всех файлов
+$ git commit -m"added documentation" # Сохранить изменения с комментарием
+$ git push origin gh-pages
+$ git checkout master  #Перемещаемся на ветку master
 ```
-
-#### Работаем с сервисом **Travis**
-
+Делаем Screenshot терминала и загружаем на сервис **Google Drive**
 ```ShellSession
-$ travis login --auto 
-$ travis enable 
-```
-
-```ShellSession
-$ mkdir artifacts                                 #Создаем каталог
-$ screencapture -T 20 artifacts/screenshot.jpg    #Делаем скриншот экрана и кидаем в каталог artifacts
+$ mkdir artifacts && cd artifacts #Создаем каталог artifacts и перемещаемся в него
+$ screencapture -T 10 screenshot.jpg #Делаем снимок экрана и помещаем его в каталог artifacts
 <Command>-T
-$ open https://github.com/${GITHUB_USERNAME}/lab06
+$ open https://${GITHUB_USERNAME}.github.io/lab07/print_8hpp_source.html #Открываем ссылку
+$ gdrive upload screenshot.jpg #Загружаем скриншот
+$ SCREENSHOT_ID=`gdrive list | grep screenshot | awk '{ print $1; }'` # Задаем значения переменной SCREENSHOT_ID
+$ gdrive share ${SCREENSHOT_ID} --role reader --type user --email rusdevops@gmail.com # Даем права на просмотр для пользователя rusdevops@gmail.com
+$ echo https://drive.google.com/open?id=${SCREENSHOT_ID} #Выводим ссылку на наше изображение
+https://drive.google.com/file/d/0Bw35q7PD8b3lNkFPb1IwRWtvdlU/view
 ```
 
 ## Report
 
 ```ShellSession
 $ cd ~/workspace/labs/
-$ export LAB_NUMBER=06
+$ export LAB_NUMBER=07
 $ git clone https://github.com/tp-labs/lab${LAB_NUMBER} tasks/lab${LAB_NUMBER}
 $ mkdir reports/lab${LAB_NUMBER}
 $ cp tasks/lab${LAB_NUMBER}/README.md reports/lab${LAB_NUMBER}/REPORT.md
@@ -144,9 +105,11 @@ $ gistup -m "lab${LAB_NUMBER}"
 
 ## Links
 
-- [Boost.Tests](http://www.boost.org/doc/libs/1_63_0/libs/test/doc/html/)
-- [Google Test](https://github.com/google/googletest)
+- [HTML](https://ru.wikipedia.org/wiki/HTML)
+- [LAΤΕΧ](https://ru.wikipedia.org/wiki/LaTeX)
+- [man](https://ru.wikipedia.org/wiki/Man_(%D0%BA%D0%BE%D0%BC%D0%B0%D0%BD%D0%B4%D0%B0_Unix))
+- [CHM](https://ru.wikipedia.org/wiki/HTMLHelp)
+- [PostScript](https://ru.wikipedia.org/wiki/PostScript)
 
 ```
 Copyright (c) 2017 Братья Вершинины
-```
