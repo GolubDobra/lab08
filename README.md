@@ -17,7 +17,7 @@ $ open https://cmake.org/Wiki/CMake:CPackPackageGenerators
 
 ## Tutorial
 
-Делаем первоначальные настройки
+#### Делаем первоначальные настройки
 ```ShellSession
 $ export GITHUB_USERNAME=GolubDobra # Выставляем переменную окружения
 $ export GITHUB_EMAIL=11198lera@mail.ru # Выставляем переменную окружения
@@ -25,14 +25,14 @@ $ alias edit=vi          # Команда edit присваиваем значе
 $ alias gsed=sed         # for *-nix system, так же присваиваем команде gstd команду sed
 ```
 
-Проводим первоначальные настройки для соединения с репозиторием восьмой лабораторной работы
+#### Проводим первоначальные настройки для соединения с репозиторием восьмой лабораторной работы
 ```ShellSession
 $ git clone https://github.com/${GITHUB_USERNAME}/lab07 lab08 #Клонирование удаленного репозитория седьмой лабораторной в локальный каталог восьмой лабораторной
 $ cd lab08      #Меняем директорию на lab08
 $ git remote remove origin    #Отключаемся от удаленного репозитория седьмой лабораторной
 $ git remote add origin https://github.com/${GITHUB_USERNAME}/lab08   #Подключаемся к удаленному репозиторию восьмой лабораторной
 ```
-Внесение изменений в CMakeLists.txt
+#### Внесение изменений в CMakeLists.txt
 ```ShellSession
 #Внесение изменений в CMakeLists.txt
 $ gsed -i '/project(print)/a\
@@ -55,7 +55,7 @@ $ gsed -i '/project(print)/a\
 set(PRINT_VERSION_MAJOR 0)
 ' CMakeLists.txt
 ```
-Работа с DESCRIPTION и ChangeLog.md
+#### Работа с DESCRIPTION и ChangeLog.md
 ```ShellSession
 $ touch DESCRIPTION && edit DESCRIPTION   #Создание DESCRIPTION и его редактирование
 $ touch ChangeLog.md    #Создание файла ChangeLog.md
@@ -64,13 +64,13 @@ $ DATE=`date` cat > ChangeLog.md <<EOF    #Внесение изменений �
 - Initial RPM release
 EOF
 ```
-Работа с CPackConfig.cmake 
+#### Работа с CPackConfig.cmake 
 ```ShellSession
 $ cat > CPackConfig.cmake <<EOF
 include(InstallRequiredSystemLibraries)
 EOF
 ```
-Работа с CPackConfig.cmake
+#### Работа с CPackConfig.cmake
 ```ShellSession
 #Внесение изменений в CPackConfig.cmake
 $ cat >> CPackConfig.cmake <<EOF
@@ -84,7 +84,7 @@ set(CPACK_PACKAGE_DESCRIPTION_FILE \${CMAKE_CURRENT_SOURCE_DIR}/DESCRIPTION)
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "static c++ library for printing")
 EOF
 ```
-Работа с CPackConfig.cmake (3)
+#### Работа с CPackConfig.cmake 
 ```ShellSession
 #Внесение изменений в CPackConfig.cmake
 #Привязываем лицензию и README.md к Cpack
@@ -94,7 +94,7 @@ set(CPACK_RESOURCE_FILE_LICENSE \${CMAKE_CURRENT_SOURCE_DIR}/LICENSE)
 set(CPACK_RESOURCE_FILE_README \${CMAKE_CURRENT_SOURCE_DIR}/README.md)
 EOF
 ```
-Работа с CPackConfig.cmake (4)
+#### Работа с CPackConfig.cmake
 ```ShellSession
 #Внесение изменений в CPackConfig.cmake
 #Устанавливаем параметры для CPACK_RPM_PACKAGE
@@ -107,7 +107,7 @@ set(CPACK_RPM_CHANGELOG_FILE \${CMAKE_CURRENT_SOURCE_DIR}/ChangeLog.md)   #Де�
 set(CPACK_RPM_PACKAGE_RELEASE 1)
 EOF
 ```
-Работа с CPackConfig.cmake (5)
+#### Работа с CPackConfig.cmake
 ```ShellSession
 #Внесение изменений в CPackConfig.cmake
 #Устанавливаем параметры для CPACK_DEBIAN_PACKAGE
@@ -119,7 +119,7 @@ set(CPACK_DEBIAN_PACKAGE_PREDEPENDS "cmake >= 3.0")
 set(CPACK_DEBIAN_PACKAGE_RELEASE 1)
 EOF
 ```
-Работа с CPackConfig.cmake (6)
+#### Работа с CPackConfig.cmake 
 ```ShellSession
 #Внесение изменений в CPackConfig.cmake
 $ cat >> CPackConfig.cmake <<EOF
@@ -127,7 +127,7 @@ $ cat >> CPackConfig.cmake <<EOF
 include(CPack)
 EOF
 ```
-Работа с CMakeLists.txt
+#### Работа с CMakeLists.txt
 ```ShellSession
 #Внесение изменений в CMakeLists.txt
 $ cat >> CMakeLists.txt <<EOF
@@ -135,22 +135,22 @@ $ cat >> CMakeLists.txt <<EOF
 include(CPackConfig.cmake)
 EOF
 ```
-Работа с README.md
+#### Работа с README.md
 ```ShellSession
 $ gsed -i 's/lab07/lab08/g' README.md   #Внесение изменений в файл README.md
 ```
-Выполняем команды для настройки локального репозитория для дальнейшей отправки в удаленный репозиторий восьмой лабораторной работы
+#### Выполняем команды для настройки локального репозитория для дальнейшей отправки в удаленный репозиторий восьмой лабораторной работы
 ```ShellSession
 $ git add .     #Добавляем все отредактированные файлы в подтвержденные
 $ git commit -m"added cpack config"     #Создаем коммит с сообщением
 $ git push origin master    #Выгружаем локальный репозиторий в удаленный репозиторий восьмой лабораторной
 ```
-Работа с Travis
+#### Работа с Travis
 ```ShellSession
 $ travis login --auto       #Авторизуемся своим GITHUB аккаунтом
 $ travis enable           #Включаем репозиторий в Travis
 ```
-Работа с CMake и CMake
+#### Работа с CMake
 ```ShellSession
 #-H. устанавливаем каталог в который сгенерируется файл CMakeLists.txt
 #-B_build указывает директорию для собираемых файлов
@@ -166,7 +166,7 @@ $ cpack -G "NSIS"
 $ cpack -G "DragNDrop"
 $ cd ..     #Выход из данной директории
 ```
-Работа с CMake
+#### Работа с CMake
 ```ShellSession
 #-H. устанавливаем каталог в который сгенерируется файл CMakeLists.txt
 #-B_build указывает директорию для собираемых файлов
@@ -176,7 +176,7 @@ $ cmake -H. -B_build -DCPACK_GENERATOR="TGZ"
 #--target указывает необходимые для обработки цели
 $ cmake --build _build --target package
 ```
-Последние действия
+#### Последние действия
 ```ShellSession
 $ mkdir artifacts     #Создание каталога artifacts
 $ mv _build/*.tar.gz artifacts      #Перемещение проектов *.tar.gz из директории _build в artifacts
