@@ -1,7 +1,6 @@
 [![Build Status](https://travis-ci.org/GolubDobra/lab08.svg?branch=master)](https://travis-ci.org/GolubDobra/lab08)
 ## Laboratory work VIII
 
-## Laboratory work VIII
 
 Данная лабораторная работа посвещена изучению средств пакетирования на примере **CPack**
 
