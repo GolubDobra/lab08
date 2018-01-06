@@ -148,7 +148,10 @@ $ git push origin master    #Выгружаем локальный репози�
 #### Работа с Travis
 ```ShellSession
 $ travis login --auto       #Авторизуемся своим GITHUB аккаунтом
+Successfully logged in as GolubDobra!
 $ travis enable           #Включаем репозиторий в Travis
+Detected repository as GolubDobra/lab04, is this correct? |yes| yes
+GolubDobra/lab04: enabled :)
 ```
 #### Работа с CMake
 ```ShellSession
@@ -181,6 +184,10 @@ $ cmake --build _build --target package
 $ mkdir artifacts     #Создание каталога artifacts
 $ mv _build/*.tar.gz artifacts      #Перемещение проектов *.tar.gz из директории _build в artifacts
 $ tree artifacts      #Команда tree графически выводит в консоли структуру нашего проекта
+artifacts
+└── print-0.1.0.0-Darwin.tar.gz
+
+0 directories, 1 file
 ```
 
 ## Report
